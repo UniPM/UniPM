@@ -3,7 +3,5 @@
     "CopyRight": "UniPM",
     "Version": "0.0.0",
     "PackagePath": "Assets/Libs/UniPM",
-    "DownloadURL": "http://code.putao.io/liqingyun/PTGamePluginServer/raw/master/TestCompress/TestCompress.zip",
-    "BuildNumber": 1000,
-    "FolderPath": "/PTUGame/"
+    "DownloadURL": "http://code.putao.io/liqingyun/PTGamePluginServer/raw/master/TestCompress/TestCompress.zip"
 }

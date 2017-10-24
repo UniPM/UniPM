@@ -51,7 +51,7 @@ namespace PTGame.Framework
 		    verticalView.AddChild(horizontalView);
 		    scrollView.AddChild(verticalView);
 
-		    foreach (var localConfigPluginInfo in localConfig.PluginInfos)
+		    foreach (var localConfigPluginInfo in localConfig.PackageList)
 		    {
 			    var scrollItem = new HorizontalView();
 			    

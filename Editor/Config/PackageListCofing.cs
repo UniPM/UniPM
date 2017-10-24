@@ -22,6 +22,8 @@
  * THE SOFTWARE.
  ****************************************************************************/
 
+using DG.Tweening.Plugins.Core.PathCore;
+
 namespace UniPM
 {
     using UnityEngine;
@@ -44,7 +46,7 @@ namespace UniPM
                 {
                     var localPluginInfo = SerializeHelper.LoadJson<PackageConfig>(fileName);
 
-                    localConfig.PluginInfos.Add(localPluginInfo);
+                    localConfig.PackageList.Add(localPluginInfo);
                 }
             });
 
@@ -53,16 +55,18 @@ namespace UniPM
 
         public static void GetRemote(Action<PackageManagerConfig> onConfigReceived)
         {
-            ObservableWWW.Get(UniPMWindow.ServerURL + "raw/master/PackageList.json").Subscribe(jsonCotnent =>
-            {
-                onConfigReceived(SerializeHelper.FromJson<PackageManagerConfig>(jsonCotnent));
-            }, err =>
-            {
-                err.ToString().Log();
-            });
+            ObservableWWW.Get("http://code.putao.io/liqingyun/PTGamePluginServer/raw/master/PackageList.json")
+                .Subscribe(jsonCotnent =>
+                {
+                    Log.I(jsonCotnent);
+                    onConfigReceived(SerializeHelper.FromJson<PackageManagerConfig>(jsonCotnent));
+                }, err =>
+                {
+                    err.ToString().Log();
+                });
         }
 
-        public List<PackageConfig> PluginInfos = new List<PackageConfig>();
+        public List<PackageConfig> PackageList = new List<PackageConfig>();
 
         public void SaveLocal()
         {

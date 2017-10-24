@@ -128,38 +128,7 @@ namespace UniPM
 
         public void SaveExport()
         {
-            this.SaveJson(ConfigFileFullPath);
+            this.SaveJson(ConfigFilePath);
         }
-        
-        public int BuildNumber = 1000;
-
-        public string FolderPath = "/PTUGame/";
-
-        public string FolderFullPath
-        {
-            get { return Application.dataPath + FolderPath + Name; }
-        }
-
-        public string ZipFileFullPath
-        {
-            get
-            {
-                return IOUtils.CreateDirIfNotExists(Application.dataPath + FolderPath + "PTGamePluginServer/" + Name +
-                                                    "/") +
-                       Name + ".zip";
-            }
-        }
-
-        public string ConfigFileFullPath
-        {
-            get
-            {
-                return IOUtils.CreateDirIfNotExists(Application.dataPath + FolderPath + "PTGamePluginServer/" + Name +
-                                                    "/") +
-                       "Config.json";
-            }
-        }
-
-
     }
 }

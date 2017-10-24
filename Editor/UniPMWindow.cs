@@ -44,14 +44,13 @@ namespace UniPM
 		[MenuItem("UniPM/Open")]
 		static void Open()
 		{
-			UniPMWindow frameworkConfigEditorWindow = (UniPMWindow) GetWindow(typeof(UniPMWindow), true);
-			frameworkConfigEditorWindow.titleContent = new GUIContent("PTFrameworkConfig");
-			frameworkConfigEditorWindow.position = new Rect(Screen.width / 2, Screen.height / 2, 800, 600f);
 
-			frameworkConfigEditorWindow.LocalConfig = PackageManagerConfig.GetLocal();
 
 			PackageManagerConfig.GetRemote(config =>
 			{
+				UniPMWindow frameworkConfigEditorWindow = (UniPMWindow) GetWindow(typeof(UniPMWindow), true);
+				frameworkConfigEditorWindow.titleContent = new GUIContent("PTFrameworkConfig");
+				frameworkConfigEditorWindow.position = new Rect(Screen.width / 2, Screen.height / 2, 800, 600f);
 				frameworkConfigEditorWindow.Init();
 				frameworkConfigEditorWindow.LocalConfig = config;
 				Log.I("show");
@@ -175,7 +174,6 @@ namespace UniPM
 
 		public PackageManagerConfig LocalConfig;
 
-		private PackageManagerConfig mConfig;
 
 		public static string ServerURL = "http://code.putao.io/liqingyun/PTGamePluginServer/";
 
@@ -189,8 +187,8 @@ namespace UniPM
 						string tempZipFile = Application.persistentDataPath + "/temp.zip";
 						File.WriteAllBytes(tempZipFile, bytes);
 						string err = string.Empty;
-						IOUtils.DeleteDirIfExists(config.FolderPath);
-						ZipUtil.UnZipFile(tempZipFile, config.FolderPath, out err);
+						IOUtils.DeleteDirIfExists(config.PackagePath);
+						ZipUtil.UnZipFile(tempZipFile, config.PackagePath, out err);
 						File.Delete(tempZipFile);
 
 						config.SaveLocal();
