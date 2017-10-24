@@ -44,7 +44,7 @@ namespace UniPM
 
         public string ConfigFilePath
         {
-            get { return PackagePath.CombinePath("package.json"); }
+            get { return PackagePath.CombinePath("Package.json"); }
         }
 
         public PackageConfig(string packagePath)

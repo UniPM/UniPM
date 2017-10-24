@@ -22,6 +22,8 @@
  * THE SOFTWARE.
  ****************************************************************************/
 
+using PTGame.Framework.Libs;
+
 namespace UniPM
 {
 	using UnityEditor;
@@ -120,6 +122,44 @@ namespace UniPM
 				PackageConfig config = PackageConfig.LoadFromPath(packageConfigPath);
 				config.UpdateVersion(2);
 				config.SaveLocal();
+			}
+			else
+			{
+				Log.W("no package.json file in folder:{0}",packagePath);
+			}
+		}
+
+		[MenuItem("Assets/UniPM/Server/CopyToServer")]
+		static void CopyToServer()
+		{
+			string packagePath = MouseSelector.GetSelectedPathOrFallback();
+			string packageConfigPath = Path.Combine(packagePath, "Package.json");
+			if (File.Exists(packageConfigPath))
+			{
+				string err = string.Empty;
+
+				
+				
+				PackageConfig config = PackageConfig.LoadFromPath(packageConfigPath);
+				string serverUploaderPath = Application.dataPath.CombinePath("PTUGame/PTGamePluginServer");
+
+				IOUtils.DeleteDirIfExists(serverUploaderPath.CombinePath(config.Name));
+				ZipUtil.ZipFile(config.PackagePath,
+					IOUtils.CreateDirIfNotExists(serverUploaderPath.CombinePath(config.Name)).CombinePath(config.Name + ".zip"), null,
+					out err);
+
+				string toConfigFilePath = serverUploaderPath.CombinePath(config.Name).CombinePath("Package.json");
+
+				IOUtils.DeleteFileIfExists(toConfigFilePath);
+				
+				
+				File.Copy(config.ConfigFilePath,toConfigFilePath);
+				
+				AssetDatabase.Refresh();
+			}
+			else
+			{
+				Log.W("no package.json file in folder:{0}",packagePath);
 			}
 		}
 		
