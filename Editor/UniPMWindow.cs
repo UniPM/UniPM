@@ -53,7 +53,7 @@ namespace UniPM
 			PackageManagerConfig.GetRemote(config =>
 			{
 				frameworkConfigEditorWindow.Init();
-				frameworkConfigEditorWindow.mConfig = config;
+				frameworkConfigEditorWindow.LocalConfig = config;
 				Log.I("show");
 				frameworkConfigEditorWindow.Show();
 			});
@@ -63,7 +63,7 @@ namespace UniPM
 		static void MakePackage()
 		{
 			string packagePath = MouseSelector.GetSelectedPathOrFallback();
-			string packageConfigPath = Path.Combine(packagePath, "package.json");
+			string packageConfigPath = Path.Combine(packagePath, "Package.json");
 			
 			if (File.Exists(packageConfigPath))
 			{
@@ -80,7 +80,7 @@ namespace UniPM
 		static void UploadPackage()
 		{
 			string packagePath = MouseSelector.GetSelectedPathOrFallback();
-			string packageConfigPath = Path.Combine(packagePath, "package.json");
+			string packageConfigPath = Path.Combine(packagePath, "Package.json");
 			
 			var packageConfig = new PackageConfig(packagePath);
 			packageConfig.SaveLocal();
@@ -90,7 +90,7 @@ namespace UniPM
 		static void UpdateMajorVersion()
 		{
 			string packagePath = MouseSelector.GetSelectedPathOrFallback();
-			string packageConfigPath = Path.Combine(packagePath, "package.json");
+			string packageConfigPath = Path.Combine(packagePath, "Package.json");
 			if (File.Exists(packageConfigPath))
 			{
 				PackageConfig config = PackageConfig.LoadFromPath(packageConfigPath);
@@ -103,7 +103,7 @@ namespace UniPM
 		static void UpdateMiddleVersion()
 		{
 			string packagePath = MouseSelector.GetSelectedPathOrFallback();
-			string packageConfigPath = Path.Combine(packagePath, "package.json");
+			string packageConfigPath = Path.Combine(packagePath, "Package.json");
 			if (File.Exists(packageConfigPath))
 			{
 				PackageConfig config = PackageConfig.LoadFromPath(packageConfigPath);
@@ -116,7 +116,7 @@ namespace UniPM
 		static void UpdateSubVersion()
 		{
 			string packagePath = MouseSelector.GetSelectedPathOrFallback();
-			string packageConfigPath = Path.Combine(packagePath, "package.json");
+			string packageConfigPath = Path.Combine(packagePath, "Package.json");
 			if (File.Exists(packageConfigPath))
 			{
 				PackageConfig config = PackageConfig.LoadFromPath(packageConfigPath);
@@ -138,8 +138,6 @@ namespace UniPM
 			{
 				string err = string.Empty;
 
-				
-				
 				PackageConfig config = PackageConfig.LoadFromPath(packageConfigPath);
 				string serverUploaderPath = Application.dataPath.CombinePath("PTUGame/PTGamePluginServer");
 
@@ -152,9 +150,10 @@ namespace UniPM
 
 				IOUtils.DeleteFileIfExists(toConfigFilePath);
 				
-				
 				File.Copy(config.ConfigFilePath,toConfigFilePath);
 				
+				
+				PackageManagerConfig.GetLocal().SaveExport();
 				AssetDatabase.Refresh();
 			}
 			else
@@ -179,6 +178,24 @@ namespace UniPM
 		private PackageManagerConfig mConfig;
 
 		public static string ServerURL = "http://code.putao.io/liqingyun/PTGamePluginServer/";
+
+		public static void DownloadZip(PackageConfig config)
+		{
+			Log.I(config.DownloadURL);
+			ObservableWWW
+				.GetAndGetBytes(config.DownloadURL).Subscribe(
+					bytes =>
+					{
+						string tempZipFile = Application.persistentDataPath + "/temp.zip";
+						File.WriteAllBytes(tempZipFile, bytes);
+						string err = string.Empty;
+						IOUtils.DeleteDirIfExists(config.FolderPath);
+						ZipUtil.UnZipFile(tempZipFile, config.FolderPath, out err);
+						File.Delete(tempZipFile);
+
+						config.SaveLocal();
+					});
+		}
 
 		[MenuItem("UniPM/ExportCompress")]
 		public static void Export()

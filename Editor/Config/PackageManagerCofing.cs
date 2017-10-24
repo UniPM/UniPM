@@ -40,7 +40,7 @@ namespace UniPM
 
             IOUtils.GetDirSubFilePathList(Application.dataPath + "/PTUGame", true, ".json").ForEach(fileName =>
             {
-                if (fileName.EndsWith("Config.json") && !fileName.Contains("PTGamePluginServer"))
+                if (fileName.EndsWith("Package.json") && !fileName.Contains("PTGamePluginServer"))
                 {
                     var localPluginInfo = SerializeHelper.LoadJson<PackageConfig>(fileName);
 
@@ -53,7 +53,7 @@ namespace UniPM
 
         public static void GetRemote(Action<PackageManagerConfig> onConfigReceived)
         {
-            ObservableWWW.Get(UniPMWindow.ServerURL + "raw/master/ServerConfigs.json").Subscribe(jsonCotnent =>
+            ObservableWWW.Get(UniPMWindow.ServerURL + "raw/master/PackageList.json").Subscribe(jsonCotnent =>
             {
                 onConfigReceived(SerializeHelper.FromJson<PackageManagerConfig>(jsonCotnent));
             }, err =>
@@ -66,12 +66,12 @@ namespace UniPM
 
         public void SaveLocal()
         {
-            this.SaveJson(Application.dataPath + "/PTUGame/ServerConfigs.json");
+            this.SaveJson(Application.dataPath + "/PTUGame/PackageList.json");
         }
 
         public void SaveExport()
         {
-            this.SaveJson(Application.dataPath + "/PTUGame/PTGamePluginServer/ServerConfigs.json");
+            this.SaveJson(Application.dataPath + "/PTUGame/PTGamePluginServer/PackageList.json");
         }
     }
 }

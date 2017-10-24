@@ -47,6 +47,9 @@ namespace UniPM
             get { return PackagePath.CombinePath("Package.json"); }
         }
 
+        public string DownloadURL =
+            "http://code.putao.io/liqingyun/PTGamePluginServer/raw/master/TestCompress/TestCompress.zip";
+
         public PackageConfig(string packagePath)
         {
             Name = packagePath.Split(Path.DirectorySeparatorChar).Last();

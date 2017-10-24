@@ -42,10 +42,11 @@ namespace PTGame.Framework
 
 		    HorizontalView horizontalView = new HorizontalView();
 
-		    horizontalView.AddChild(UIFactory.CreateTitleLabel("remote"));
+		    horizontalView.AddChild(UIFactory.CreateTitleLabel("package name"));
 		    horizontalView.AddChild(UIFactory.CreateTitleLabel("version"));
-		    horizontalView.AddChild(UIFactory.CreateTitleLabel("download"));
-		    horizontalView.AddChild(UIFactory.CreateTitleLabel("installed"));
+		    horizontalView.AddChild(UIFactory.CreateTitleLabel("copyright"));
+		    horizontalView.AddChild(UIFactory.CreateTitleLabel("folder"));
+		    
 
 		    verticalView.AddChild(horizontalView);
 		    scrollView.AddChild(verticalView);
@@ -53,8 +54,13 @@ namespace PTGame.Framework
 		    foreach (var localConfigPluginInfo in localConfig.PluginInfos)
 		    {
 			    var scrollItem = new HorizontalView();
+			    
 			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.Name));
-			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.Version));
+			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(string.Format("v{0}", localConfigPluginInfo.Version)));
+			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.CopyRight));
+			    scrollItem.AddChild(new Button("Download", 65, 25, () => UniPMWindow.DownloadZip(localConfigPluginInfo)));
+//			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.PackagePath));
+
 //			    scrollItem.AddChild(new Button("update", 65, 25, () => Application.OpenURL(localConfigPluginInfo.Url)));
 			    scrollView.AddChild(scrollItem);
 		    }
