@@ -22,8 +22,6 @@
  * THE SOFTWARE.
  ****************************************************************************/
 
-using DG.Tweening.Plugins.Core.PathCore;
-
 namespace UniPM
 {
     using UnityEngine;
@@ -58,7 +56,6 @@ namespace UniPM
             ObservableWWW.Get("http://code.putao.io/liqingyun/PTGamePluginServer/raw/master/PackageList.json")
                 .Subscribe(jsonCotnent =>
                 {
-                    Log.I(jsonCotnent);
                     onConfigReceived(SerializeHelper.FromJson<PackageManagerConfig>(jsonCotnent));
                 }, err =>
                 {

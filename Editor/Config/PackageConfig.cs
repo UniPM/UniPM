@@ -24,7 +24,6 @@
 
 namespace UniPM
 {
-    using UnityEngine;
     using PTGame.Framework;
     using PTGame.Framework.Libs;
     using System.Linq;
@@ -47,14 +46,14 @@ namespace UniPM
             get { return PackagePath.CombinePath("Package.json"); }
         }
 
-        public string DownloadURL =
-            "http://code.putao.io/liqingyun/PTGamePluginServer/raw/master/TestCompress/TestCompress.zip";
-
+        public string DownloadURL;
+        
         public PackageConfig(string packagePath)
         {
             Name = packagePath.Split(Path.DirectorySeparatorChar).Last();
             PackagePath = packagePath;
             Version = "0.0.0";
+            DownloadURL = string.Format("http://code.putao.io/liqingyun/PTGamePluginServer/raw/master/{0}/{0}.zip", Name);
         }
 
         void UpdateView()
@@ -123,6 +122,7 @@ namespace UniPM
         public void SaveLocal()
         {
             this.SaveJson(ConfigFilePath);
+            AssetDatabase.Refresh();
             UpdateView();
         }
 

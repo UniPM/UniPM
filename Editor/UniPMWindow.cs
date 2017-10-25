@@ -51,9 +51,8 @@ namespace UniPM
 				UniPMWindow frameworkConfigEditorWindow = (UniPMWindow) GetWindow(typeof(UniPMWindow), true);
 				frameworkConfigEditorWindow.titleContent = new GUIContent("PTFrameworkConfig");
 				frameworkConfigEditorWindow.position = new Rect(Screen.width / 2, Screen.height / 2, 800, 600f);
-				frameworkConfigEditorWindow.Init();
 				frameworkConfigEditorWindow.LocalConfig = config;
-				Log.I("show");
+				frameworkConfigEditorWindow.Init();
 				frameworkConfigEditorWindow.Show();
 			});
 		}
@@ -63,16 +62,18 @@ namespace UniPM
 		{
 			string packagePath = MouseSelector.GetSelectedPathOrFallback();
 			string packageConfigPath = Path.Combine(packagePath, "Package.json");
-			
+
+			PackageConfig packageConfig = null;
 			if (File.Exists(packageConfigPath))
 			{
-				Log.E("Already Exists Config File:{0}", packageConfigPath);
+				packageConfig = PackageConfig.LoadFromPath(packageConfigPath);
+				packageConfig.PackagePath = packagePath;
 			}
 			else
 			{
-				var packageConfig = new PackageConfig(packagePath);
-				packageConfig.SaveLocal();
+				packageConfig = new PackageConfig(packagePath);
 			}
+			packageConfig.SaveLocal();
 		}
 
 		[MenuItem("Assets/UniPM/UploadPackage")]
@@ -174,12 +175,10 @@ namespace UniPM
 
 		public PackageManagerConfig LocalConfig;
 
-
 		public static string ServerURL = "http://code.putao.io/liqingyun/PTGamePluginServer/";
 
 		public static void DownloadZip(PackageConfig config)
 		{
-			Log.I(config.DownloadURL);
 			ObservableWWW
 				.GetAndGetBytes(config.DownloadURL).Subscribe(
 					bytes =>
@@ -191,6 +190,7 @@ namespace UniPM
 						ZipUtil.UnZipFile(tempZipFile, config.PackagePath, out err);
 						File.Delete(tempZipFile);
 
+						AssetDatabase.Refresh();
 						config.SaveLocal();
 					});
 		}
@@ -211,6 +211,21 @@ namespace UniPM
 		[MenuItem("UniPM/Test")]
 		public static void Test()
 		{
+			// "http://code.putao.io/liqingyun/PTGamePluginServer/raw/master/PackageList.json"
+			ObservableWWW.Get("http://www.baidu.com")
+				.Subscribe(
+					jsonContent =>
+					{
+						if (string.IsNullOrEmpty(jsonContent)) Log.E("is null or empty");
+						
+					}, err =>
+					{
+						Log.E(err);
+					});
+			
+			
+
+
 //			var configFileList = IOUtils.GetDirSubFilePathList(new PackageConfig().FolderFullPath, true, "Config.json");
 //			configFileList.ForEach(fileName => fileName.Log());
 		}
