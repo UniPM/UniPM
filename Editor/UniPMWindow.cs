@@ -142,9 +142,8 @@ namespace UniPM
 				string serverUploaderPath = Application.dataPath.CombinePath("PTUGame/PTGamePluginServer");
 
 				IOUtils.DeleteDirIfExists(serverUploaderPath.CombinePath(config.Name));
-				ZipUtil.ZipFile(config.PackagePath,
-					IOUtils.CreateDirIfNotExists(serverUploaderPath.CombinePath(config.Name)).CombinePath(config.Name + ".zip"), null,
-					out err);
+				ZipUtil.ZipDirectory(config.PackagePath,
+					IOUtils.CreateDirIfNotExists(serverUploaderPath.CombinePath(config.Name)).CombinePath(config.Name + ".zip"));
 
 				string toConfigFilePath = serverUploaderPath.CombinePath(config.Name).CombinePath("Package.json");
 
@@ -187,7 +186,7 @@ namespace UniPM
 						File.WriteAllBytes(tempZipFile, bytes);
 						string err = string.Empty;
 						IOUtils.DeleteDirIfExists(config.PackagePath);
-						ZipUtil.UnZipFile(tempZipFile, config.PackagePath, out err);
+						ZipUtil.UnZipFile(tempZipFile, config.PackagePath);
 						File.Delete(tempZipFile);
 
 						AssetDatabase.Refresh();
