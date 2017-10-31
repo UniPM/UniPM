@@ -44,7 +44,7 @@ namespace PTGame.Framework
 
 		    horizontalView.AddChild(UIFactory.CreateTitleLabel("package name"));
 		    horizontalView.AddChild(UIFactory.CreateTitleLabel("version"));
-		    horizontalView.AddChild(UIFactory.CreateTitleLabel("copyright"));
+		    horizontalView.AddChild(UIFactory.CreateTitleLabel("release notes"));
 		    horizontalView.AddChild(UIFactory.CreateTitleLabel("folder"));
 		    
 
@@ -57,7 +57,7 @@ namespace PTGame.Framework
 			    
 			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.Name));
 			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(string.Format("v{0}", localConfigPluginInfo.Version)));
-			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.CopyRight));
+			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.ReleaseNote));
 			    scrollItem.AddChild(new Button("Download", 65, 25, () => UniPMWindow.DownloadZip(localConfigPluginInfo)));
 //			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.PackagePath));
 

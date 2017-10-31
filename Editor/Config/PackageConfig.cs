@@ -46,6 +46,8 @@ namespace UniPM
             get { return PackagePath.CombinePath("Package.json"); }
         }
 
+        public string ReleaseNote;
+
         public string DownloadURL;
         
         public PackageConfig(string packagePath)
