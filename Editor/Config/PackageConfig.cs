@@ -54,8 +54,8 @@ namespace UniPM
             Name = packagePath.Split(Path.DirectorySeparatorChar).Last();
             PackagePath = packagePath;
             Version = "0.0.0";
-            DownloadURL =
-                string.Format(PackageListConfig.GetInstalledPackageList().GitUrl + "/raw/master/{0}/{0}.zip", Name);
+            DownloadURL = EditorPrefs.GetString(PackageListConfig.GitUrl)
+                .AppendFormat("/raw/master/{0}/{0}.zip", Name).ToString();
         }
 
         void UpdateView()

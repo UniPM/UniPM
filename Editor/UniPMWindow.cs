@@ -22,6 +22,9 @@
  * THE SOFTWARE.
  ****************************************************************************/
 
+using System.Diagnostics;
+using System.Security;
+
 namespace UniPM
 {
 	using UnityEditor;
@@ -87,13 +90,10 @@ namespace UniPM
 		[MenuItem("Assets/UniPM/UploadPackage")]
 		static void UploadPackage()
 		{
-			string packagePath = MouseSelector.GetSelectedPathOrFallback();
-			string packageConfigPath = Path.Combine(packagePath, "Package.json");
-			
-			var packageConfig = new PackageConfig(packagePath);
-			packageConfig.SaveLocal();
+			RunCommand(PackageListConfig.GitUrl.GetLastWord(),
+				"git add . && git commit -m \"test update\" && git push");
 		}
-		
+
 		[MenuItem("Assets/UniPM/Version/Update (x.0.0")]
 		static void UpdateMajorVersion()
 		{
@@ -137,6 +137,34 @@ namespace UniPM
 			}
 		}
 
+
+		public static void RunCommand(string workingDirectory,string command)
+		{
+			ProcessStartInfo startInfo = new ProcessStartInfo("/bin/bash");
+			startInfo.WorkingDirectory = Application.dataPath.CombinePath(workingDirectory);
+			startInfo.UseShellExecute = false;
+			startInfo.RedirectStandardInput = true;
+			startInfo.RedirectStandardOutput = true;
+			startInfo.CreateNoWindow = true;
+
+			Process process = new Process();
+			process.StartInfo = startInfo;
+			process.Start();
+			string[] splitCmds = command.Split("&&".ToCharArray());
+			foreach (var cmd in splitCmds)
+			{
+				process.StandardInput.WriteLine(cmd);
+			}
+			process.StandardInput.WriteLine("exit"); // if no exit then WaitForExit will lockup your program
+			process.StandardInput.Flush();
+
+			string line = process.StandardOutput.ReadToEnd();
+
+			process.WaitForExit();
+			Debug.Log(line);
+
+		}
+
 		[MenuItem("Assets/UniPM/Server/CopyToServer")]
 		static void CopyToServer()
 		{
@@ -147,9 +175,13 @@ namespace UniPM
 				string err = string.Empty;
 
 				PackageConfig config = PackageConfig.LoadFromPath(packageConfigPath);
-				string serverUploaderPath = Application.dataPath.CombinePath("PTUGame/PTGamePluginServer");
+				string serverUploaderPath = Application.dataPath.CombinePath(PackageListConfig.GitUrl.GetLastWord());
 
-				IOUtils.DeleteDirIfExists(serverUploaderPath.CombinePath(config.Name));
+				if (!Directory.Exists(serverUploaderPath))
+				{
+					RunCommand("","git clone ".Append(PackageListConfig.GitUrl).ToString());
+				}
+
 				ZipUtil.ZipDirectory(config.PackagePath,
 					IOUtils.CreateDirIfNotExists(serverUploaderPath.CombinePath(config.Name)).CombinePath(config.Name + ".zip"));
 

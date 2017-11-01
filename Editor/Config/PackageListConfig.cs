@@ -34,14 +34,17 @@ namespace UniPM
     [System.Serializable]
     public class PackageListConfig
     {
-        private const string GIT_URL_KEY = "UniRxGitUrlKey";
 
         public PackageListConfig()
         {
-            GitUrl = EditorPrefs.GetString(GIT_URL_KEY, string.Empty);
         }
 
-        public string GitUrl;
+        private const string GIT_URL_KEY = "UniRxGitUrlKey";
+        public static string GitUrl
+        {
+            get { return EditorPrefs.GetString(GIT_URL_KEY, string.Empty); }
+            set { EditorPrefs.SetString(GIT_URL_KEY, value); }
+        }
 
         public List<PackageConfig> PackageList = new List<PackageConfig>();
 
@@ -86,7 +89,7 @@ namespace UniPM
 
         public void SaveExport()
         {
-            this.SaveJson(Application.dataPath + "/PackageListServer/PackageList.json");
+            this.SaveJson(Application.dataPath.CombinePath(GitUrl.GetLastWord()).CombinePath("PackageList.json"));
         }
     }
 }

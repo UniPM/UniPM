@@ -46,11 +46,10 @@ namespace UniPM
 		    LabelView labelView = new LabelView("Git Url:",50,30);
 		    labelView.FontColor = Color.white;
 		    gitHorizontalView.AddChild(labelView);
-			TextField gitUrl = new TextField(localConfig.GitUrl);
+			TextField gitUrl = new TextField(PackageListConfig.GitUrl);
 		    gitUrl.OnTextChanged += text =>
 		    {
-			    localConfig.GitUrl = text;
-			    localConfig.SaveLocal();
+			    PackageListConfig.GitUrl = text;
 		    };
 		    
 		    gitHorizontalView.AddChild(gitUrl);
