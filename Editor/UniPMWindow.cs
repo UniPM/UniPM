@@ -96,17 +96,20 @@ namespace UniPM
 
 				if (!Directory.Exists(serverUploaderPath))
 				{
-					RunCommand("","git clone ".Append(PackageListConfig.GitUrl).ToString());
+					RunCommand(string.Empty,"git clone ".Append(PackageListConfig.GitUrl).ToString());
 				}
 
 				ZipUtil.ZipDirectory(config.PackagePath,
 					IOUtils.CreateDirIfNotExists(serverUploaderPath.CombinePath(config.Name)).CombinePath(config.Name + ".zip"));
 				
 				PackageListConfig.GetInstalledPackageList().SaveExport();
-				AssetDatabase.Refresh();
 				
 				RunCommand(PackageListConfig.GitUrl.GetLastWord(),
 					"git add . && git commit -m \"test update\" && git push");
+
+				RunCommand(string.Empty,"rm -rf " + PackageListConfig.GitUrl.GetLastWord());
+				
+				AssetDatabase.Refresh();
 			}
 			else
 			{
@@ -157,7 +160,6 @@ namespace UniPM
 			}
 		}
 
-
 		public static void RunCommand(string workingDirectory,string command)
 		{
 			ProcessStartInfo startInfo = new ProcessStartInfo("/bin/bash");
@@ -184,7 +186,6 @@ namespace UniPM
 			Debug.Log(line);
 		}
 
-
 		public PackageListConfig LocalConfig;
 
 		public static void DownloadZip(PackageConfig config)
@@ -210,6 +211,5 @@ namespace UniPM
 		{
 			PackageListConfig.GetInstalledPackageList().SaveExport();
 		}
-
 	}
 }

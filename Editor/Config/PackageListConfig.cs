@@ -55,7 +55,7 @@ namespace UniPM
 
             IOUtils.GetDirSubFilePathList(Application.dataPath, true, ".asset").ForEach(fileName =>
             {
-                if (fileName.EndsWith("Package.asset") && !fileName.Contains("PackageListServer"))
+                if (fileName.EndsWith(".asset") && Directory.Exists(fileName.Replace(".asset",string.Empty)) && !fileName.Contains("PackageListServer"))
                 {
                     fileName = fileName.Replace(Application.dataPath, "Assets");
                     var installedPackageInfo = AssetDatabase.LoadAssetAtPath<PackageConfig>(fileName);
