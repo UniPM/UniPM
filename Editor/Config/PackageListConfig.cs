@@ -32,11 +32,11 @@ namespace UniPM
     using UnityEditor;
     
     [System.Serializable]
-    public class PackageManagerConfig
+    public class PackageListConfig
     {
         private const string GIT_URL_KEY = "UniRxGitUrlKey";
 
-        public PackageManagerConfig()
+        public PackageListConfig()
         {
             GitUrl = EditorPrefs.GetString(GIT_URL_KEY, string.Empty);
         }
@@ -48,9 +48,9 @@ namespace UniPM
         public List<PackageConfig> InstalledPackageList { get; set; }
 
         
-        public static PackageManagerConfig GetInstalledPackageList()
+        public static PackageListConfig GetInstalledPackageList()
         {
-            PackageManagerConfig localConfig = new PackageManagerConfig();
+            PackageListConfig localConfig = new PackageListConfig();
             localConfig.InstalledPackageList = new List<PackageConfig>();
 
             IOUtils.GetDirSubFilePathList(Application.dataPath, true, ".json").ForEach(fileName =>
@@ -66,12 +66,12 @@ namespace UniPM
             return localConfig;
         }
 
-        public void GetRemote(Action<PackageManagerConfig> onConfigReceived)
+        public void GetRemote(Action<PackageListConfig> onConfigReceived)
         {
-            ObservableWWW.Get(GitUrl + "/raw/master/PackageList.json")
+            ObservableWWW.Get("http://github.com/UniPM/PackageListServer/raw/master/PackageList.json")
                 .Subscribe(jsonCotnent =>
                 {
-                    onConfigReceived(SerializeHelper.FromJson<PackageManagerConfig>(jsonCotnent));
+                    onConfigReceived(SerializeHelper.FromJson<PackageListConfig>(jsonCotnent));
                 }, err =>
                 {
                     Log.E(err);
@@ -86,7 +86,7 @@ namespace UniPM
 
         public void SaveExport()
         {
-            this.SaveJson(Application.dataPath + "/PTUGame/PTGamePluginServer/PackageList.json");
+            this.SaveJson(Application.dataPath + "/PackageListServer/PackageList.json");
         }
     }
 }

@@ -44,7 +44,7 @@ namespace UniPM
 			UniPMWindow frameworkConfigEditorWindow = (UniPMWindow) GetWindow(typeof(UniPMWindow), true);
 			frameworkConfigEditorWindow.titleContent = new GUIContent("UniPM");
 			frameworkConfigEditorWindow.position = new Rect(Screen.width / 2, Screen.height / 2, 800, 600f);
-			frameworkConfigEditorWindow.LocalConfig = PackageManagerConfig.GetInstalledPackageList();
+			frameworkConfigEditorWindow.LocalConfig = PackageListConfig.GetInstalledPackageList();
 			frameworkConfigEditorWindow.Init();
 			frameworkConfigEditorWindow.Show();
 
@@ -160,7 +160,7 @@ namespace UniPM
 				File.Copy(config.ConfigFilePath,toConfigFilePath);
 				
 				
-				PackageManagerConfig.GetInstalledPackageList().SaveExport();
+				PackageListConfig.GetInstalledPackageList().SaveExport();
 				AssetDatabase.Refresh();
 			}
 			else
@@ -171,7 +171,7 @@ namespace UniPM
 		
 
 
-		public PackageManagerConfig LocalConfig;
+		public PackageListConfig LocalConfig;
 
 		public static string ServerURL = "http://code.putao.io/liqingyun/PTGamePluginServer/";
 
@@ -226,7 +226,7 @@ namespace UniPM
 		[MenuItem("UniPM/ExtractServer")]
 		public static void ExtractGameServer()
 		{
-			PackageManagerConfig.GetInstalledPackageList().SaveExport();
+			PackageListConfig.GetInstalledPackageList().SaveExport();
 		}
 
 		[MenuItem("UniPM/UpdateCompress")]

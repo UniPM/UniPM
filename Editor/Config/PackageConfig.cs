@@ -48,13 +48,14 @@ namespace UniPM
         public string ReleaseNote;
 
         public string DownloadURL;
-        
+
         public PackageConfig(string packagePath)
         {
             Name = packagePath.Split(Path.DirectorySeparatorChar).Last();
             PackagePath = packagePath;
             Version = "0.0.0";
-            DownloadURL = string.Format("http://code.putao.io/liqingyun/PTGamePluginServer/raw/master/{0}/{0}.zip", Name);
+            DownloadURL =
+                string.Format(PackageListConfig.GetInstalledPackageList().GitUrl + "/raw/master/{0}/{0}.zip", Name);
         }
 
         void UpdateView()

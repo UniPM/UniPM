@@ -32,7 +32,7 @@ namespace UniPM
     /// </summary>
     public class UIInstalledPackageListPage : EditorView
     {
-	    public UIInstalledPackageListPage(PackageManagerConfig localConfig)
+	    public UIInstalledPackageListPage(PackageListConfig localConfig)
 	    {
 		    ScrollView scrollView = new ScrollView();
 		    scrollView.Width = 800;
