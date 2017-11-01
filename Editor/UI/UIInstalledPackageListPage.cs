@@ -22,16 +22,17 @@
  * THE SOFTWARE.
  ****************************************************************************/
 
-namespace PTGame.Framework
+using UnityEngine;
+
+namespace UniPM
 {
-	using UnityEngine;
-	using UniPM;
+	using QFramework;
     /// <summary>
     /// 本地页面
     /// </summary>
-    public class InstalledPackageListPage : EditorView
+    public class UIInstalledPackageListPage : EditorView
     {
-	    public InstalledPackageListPage(PackageManagerConfig localConfig)
+	    public UIInstalledPackageListPage(PackageManagerConfig localConfig)
 	    {
 		    ScrollView scrollView = new ScrollView();
 		    scrollView.Width = 800;
@@ -39,7 +40,23 @@ namespace PTGame.Framework
 
 		    VerticalView verticalView = new VerticalView();
 		    verticalView.AddChild(new SpaceView());
+			
+		    HorizontalView gitHorizontalView = new HorizontalView();
 
+		    LabelView labelView = new LabelView("Git Url:",50,30);
+		    labelView.FontColor = Color.white;
+		    gitHorizontalView.AddChild(labelView);
+			TextField gitUrl = new TextField(localConfig.GitUrl);
+		    gitUrl.OnTextChanged += text =>
+		    {
+			    localConfig.GitUrl = text;
+			    localConfig.SaveLocal();
+		    };
+		    
+		    gitHorizontalView.AddChild(gitUrl);
+
+		    verticalView.AddChild(gitHorizontalView);
+		    
 		    HorizontalView horizontalView = new HorizontalView();
 
 		    horizontalView.AddChild(UIFactory.CreateTitleLabel("package name"));
@@ -47,18 +64,17 @@ namespace PTGame.Framework
 		    horizontalView.AddChild(UIFactory.CreateTitleLabel("release notes"));
 		    horizontalView.AddChild(UIFactory.CreateTitleLabel("folder"));
 		    
-
 		    verticalView.AddChild(horizontalView);
 		    scrollView.AddChild(verticalView);
 
-		    foreach (var localConfigPluginInfo in localConfig.PackageList)
+		    foreach (var localConfigPluginInfo in localConfig.InstalledPackageList)
 		    {
 			    var scrollItem = new HorizontalView();
 			    
 			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.Name));
 			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(string.Format("v{0}", localConfigPluginInfo.Version)));
 			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.ReleaseNote));
-			    scrollItem.AddChild(new Button("Download", 65, 25, () => UniPMWindow.DownloadZip(localConfigPluginInfo)));
+			    scrollItem.AddChild(new ButtonView("Download", 65, 25, () => UniPMWindow.DownloadZip(localConfigPluginInfo)));
 //			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.PackagePath));
 
 //			    scrollItem.AddChild(new Button("update", 65, 25, () => Application.OpenURL(localConfigPluginInfo.Url)));

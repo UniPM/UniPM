@@ -22,52 +22,66 @@
  * THE SOFTWARE.
  ****************************************************************************/
 
+
 namespace UniPM
 {
     using UnityEngine;
-    using UniRx;
     using System;
     using System.Collections.Generic;
-    using PTGame.Framework.Libs;
-    using PTGame.Framework;
-
+    using QFramework;
+    using UnityEditor;
+    
     [System.Serializable]
     public class PackageManagerConfig
     {
-        public static PackageManagerConfig GetLocal()
+        private const string GIT_URL_KEY = "UniRxGitUrlKey";
+
+        public PackageManagerConfig()
+        {
+            GitUrl = EditorPrefs.GetString(GIT_URL_KEY, string.Empty);
+        }
+
+        public string GitUrl;
+
+        public List<PackageConfig> PackageList = new List<PackageConfig>();
+
+        public List<PackageConfig> InstalledPackageList { get; set; }
+
+        
+        public static PackageManagerConfig GetInstalledPackageList()
         {
             PackageManagerConfig localConfig = new PackageManagerConfig();
+            localConfig.InstalledPackageList = new List<PackageConfig>();
 
-            IOUtils.GetDirSubFilePathList(Application.dataPath + "/PTUGame", true, ".json").ForEach(fileName =>
+            IOUtils.GetDirSubFilePathList(Application.dataPath, true, ".json").ForEach(fileName =>
             {
-                if (fileName.EndsWith("Package.json") && !fileName.Contains("PTGamePluginServer"))
+                if (fileName.EndsWith("Package.json") && !fileName.Contains("PackageListServer"))
                 {
                     var localPluginInfo = SerializeHelper.LoadJson<PackageConfig>(fileName);
 
-                    localConfig.PackageList.Add(localPluginInfo);
+                    localConfig.InstalledPackageList.Add(localPluginInfo);
                 }
             });
 
             return localConfig;
         }
 
-        public static void GetRemote(Action<PackageManagerConfig> onConfigReceived)
+        public void GetRemote(Action<PackageManagerConfig> onConfigReceived)
         {
-            ObservableWWW.Get("http://code.putao.io/liqingyun/PTGamePluginServer/raw/master/PackageList.json")
+            ObservableWWW.Get(GitUrl + "/raw/master/PackageList.json")
                 .Subscribe(jsonCotnent =>
                 {
                     onConfigReceived(SerializeHelper.FromJson<PackageManagerConfig>(jsonCotnent));
                 }, err =>
                 {
-                    err.ToString().Log();
+                    Log.E(err);
                 });
         }
 
-        public List<PackageConfig> PackageList = new List<PackageConfig>();
 
         public void SaveLocal()
         {
-            this.SaveJson(Application.dataPath + "/PTUGame/PackageList.json");
+            EditorPrefs.SetString(GIT_URL_KEY, GitUrl);
         }
 
         public void SaveExport()

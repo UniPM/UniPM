@@ -22,15 +22,12 @@
  * THE SOFTWARE.
  ****************************************************************************/
 
-using PTGame.Framework.Libs;
-
 namespace UniPM
 {
 	using UnityEditor;
 	using UnityEngine;
 	using System.IO;
-	using UniRx;
-	using PTGame.Framework;
+	using QFramework;
 
 	/// <summary>
 	///  TODO: 交互优化:
@@ -39,22 +36,33 @@ namespace UniPM
 	///  TODO:功能:
 	/// 	1.要提供一个全局的配置。
 	/// </summary>
-	public class UniPMWindow : PTEditorWindow
+	public class UniPMWindow : QEditorWindow
 	{
 		[MenuItem("UniPM/Open")]
 		static void Open()
 		{
+			UniPMWindow frameworkConfigEditorWindow = (UniPMWindow) GetWindow(typeof(UniPMWindow), true);
+			frameworkConfigEditorWindow.titleContent = new GUIContent("UniPM");
+			frameworkConfigEditorWindow.position = new Rect(Screen.width / 2, Screen.height / 2, 800, 600f);
+			frameworkConfigEditorWindow.LocalConfig = PackageManagerConfig.GetInstalledPackageList();
+			frameworkConfigEditorWindow.Init();
+			frameworkConfigEditorWindow.Show();
 
+			// PackageManagerConfig.GetRemote(config =>
+			// {
 
-			PackageManagerConfig.GetRemote(config =>
-			{
-				UniPMWindow frameworkConfigEditorWindow = (UniPMWindow) GetWindow(typeof(UniPMWindow), true);
-				frameworkConfigEditorWindow.titleContent = new GUIContent("PTFrameworkConfig");
-				frameworkConfigEditorWindow.position = new Rect(Screen.width / 2, Screen.height / 2, 800, 600f);
-				frameworkConfigEditorWindow.LocalConfig = config;
-				frameworkConfigEditorWindow.Init();
-				frameworkConfigEditorWindow.Show();
-			});
+			// });
+		}
+
+				/// <summary>
+		/// 现在成功的PackageListPage
+		/// </summary>
+		private UIInstalledPackageListPage mInstalledPackageListPage;
+		
+		void Init()
+		{
+			mInstalledPackageListPage = new UIInstalledPackageListPage(LocalConfig);
+			AddChild(mInstalledPackageListPage);
 		}
 
 		[MenuItem("Assets/UniPM/MakePackage")]
@@ -152,7 +160,7 @@ namespace UniPM
 				File.Copy(config.ConfigFilePath,toConfigFilePath);
 				
 				
-				PackageManagerConfig.GetLocal().SaveExport();
+				PackageManagerConfig.GetInstalledPackageList().SaveExport();
 				AssetDatabase.Refresh();
 			}
 			else
@@ -161,16 +169,7 @@ namespace UniPM
 			}
 		}
 		
-		/// <summary>
-		/// 现在成功的PackageListPage
-		/// </summary>
-		private InstalledPackageListPage mInstalledPackageListPage;
-		
-		void Init()
-		{
-			mInstalledPackageListPage = new InstalledPackageListPage(LocalConfig);
-			AddChild(mInstalledPackageListPage);
-		}
+
 
 		public PackageManagerConfig LocalConfig;
 
@@ -203,8 +202,7 @@ namespace UniPM
 //			ZipUtil.ZipFile(packageData.FolderFullPath, packageData.ZipFileFullPath, ".json", out err);
 //			packageData.SaveExport();
 			AssetDatabase.Refresh();
-
-			err.Log();
+			Log.E(err);
 		}
 
 		[MenuItem("UniPM/Test")]
@@ -221,10 +219,6 @@ namespace UniPM
 					{
 						Log.E(err);
 					});
-			
-			
-
-
 //			var configFileList = IOUtils.GetDirSubFilePathList(new PackageConfig().FolderFullPath, true, "Config.json");
 //			configFileList.ForEach(fileName => fileName.Log());
 		}
@@ -232,7 +226,7 @@ namespace UniPM
 		[MenuItem("UniPM/ExtractServer")]
 		public static void ExtractGameServer()
 		{
-			PackageManagerConfig.GetLocal().SaveExport();
+			PackageManagerConfig.GetInstalledPackageList().SaveExport();
 		}
 
 		[MenuItem("UniPM/UpdateCompress")]

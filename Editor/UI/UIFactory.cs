@@ -25,7 +25,7 @@
 namespace UniPM
 {
     using UnityEngine;
-    using PTGame.Framework;
+    using QFramework;
     
     public class UIFactory
     {
