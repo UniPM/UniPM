@@ -59,7 +59,10 @@ namespace UniPM
                 {
                     fileName = fileName.Replace(Application.dataPath, "Assets");
                     var installedPackageInfo = AssetDatabase.LoadAssetAtPath<PackageConfig>(fileName);
-                    localConfig.InstalledPackageList.Add(installedPackageInfo);
+                    if (null != installedPackageInfo) 
+                    {
+                        localConfig.InstalledPackageList.Add(installedPackageInfo);
+                    }
                 }
             });
 
