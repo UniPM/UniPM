@@ -51,11 +51,11 @@ namespace UniPM
 			frameworkConfigEditorWindow.Show();
 		}
 
-				/// <summary>
+		/// <summary>
 		/// 现在成功的PackageListPage
 		/// </summary>
 		private UIInstalledPackageListPage mInstalledPackageListPage;
-		
+
 		void Init()
 		{
 			mInstalledPackageListPage = new UIInstalledPackageListPage(LocalConfig);
@@ -84,7 +84,6 @@ namespace UniPM
 		[MenuItem("Assets/UniPM/UploadPackage")]
 		static void UploadPackage()
 		{
-			
 			string packagePath = MouseSelector.GetSelectedPathOrFallback();
 			string packageConfigPath = packagePath.EndsWith(".asset") ? packagePath : packagePath.Append(".asset").ToString();
 			if (File.Exists(packageConfigPath))
@@ -96,24 +95,27 @@ namespace UniPM
 
 				if (!Directory.Exists(serverUploaderPath))
 				{
-					RunCommand(string.Empty,"git clone ".Append(PackageListConfig.GitUrl).ToString());
+					RunCommand(string.Empty, "git clone ".Append(PackageListConfig.GitUrl).ToString());
 				}
 
 				ZipUtil.ZipDirectory(config.PackagePath,
 					IOUtils.CreateDirIfNotExists(serverUploaderPath.CombinePath(config.Name)).CombinePath(config.Name + ".zip"));
-				
-				PackageListConfig.GetInstalledPackageList().SaveExport();
-				
-				RunCommand(PackageListConfig.GitUrl.GetLastWord(),
-					"git add . && git commit -m \"test update\" && git push");
 
-				RunCommand(string.Empty,"rm -rf " + PackageListConfig.GitUrl.GetLastWord());
-				
+				PackageListConfig.GetInstalledPackageList().SaveExport();
+
+				RunCommand(PackageListConfig.GitUrl.GetLastWord(), string.Format(
+					"git add . && git commit -m \"{0}\" && git push",
+					config.ReleaseNote.IsNullOrEmpty() ? "no release note" : config.ReleaseNote));
+
+				RunCommand(string.Empty, "rm -rf " + PackageListConfig.GitUrl.GetLastWord());
+
 				AssetDatabase.Refresh();
+
+				Application.OpenURL(PackageListConfig.GitUrl);
 			}
 			else
 			{
-				Log.W("no package.json file in folder:{0}",packagePath);
+				Log.W("no package.json file in folder:{0}", packagePath);
 			}
 		}
 
@@ -129,7 +131,7 @@ namespace UniPM
 				config.SaveLocal();
 			}
 		}
-		
+
 		[MenuItem("Assets/UniPM/Version/Update (0.x.0")]
 		static void UpdateMiddleVersion()
 		{
@@ -142,7 +144,7 @@ namespace UniPM
 				config.SaveLocal();
 			}
 		}
-		
+
 		[MenuItem("Assets/UniPM/Version/Update (0.0.x")]
 		static void UpdateSubVersion()
 		{
@@ -156,11 +158,11 @@ namespace UniPM
 			}
 			else
 			{
-				Log.W("no package.json file in folder:{0}",packagePath);
+				Log.W("no package.json file in folder:{0}", packagePath);
 			}
 		}
 
-		public static void RunCommand(string workingDirectory,string command)
+		public static void RunCommand(string workingDirectory, string command)
 		{
 			ProcessStartInfo startInfo = new ProcessStartInfo("/bin/bash");
 			startInfo.WorkingDirectory = Application.dataPath.CombinePath(workingDirectory);
@@ -203,6 +205,7 @@ namespace UniPM
 
 						AssetDatabase.Refresh();
 						config.SaveLocal();
+						Log.I("succeed");
 					});
 		}
 

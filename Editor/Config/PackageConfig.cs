@@ -124,6 +124,9 @@ namespace UniPM
         
         public void SaveLocal()
         {
+            IOUtils.DeleteFileIfExists(ConfigFilePath);
+            AssetDatabase.Refresh();
+
             AssetDatabase.CreateAsset(this, ConfigFilePath);
             AssetDatabase.Refresh();
             UpdateView();
