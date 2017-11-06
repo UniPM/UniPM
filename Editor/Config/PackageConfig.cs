@@ -22,10 +22,9 @@
  * THE SOFTWARE.
  ****************************************************************************/
 
-using UnityEngine;
-
 namespace UniPM
 {
+    using UnityEngine;
     using QFramework;
     using System.Linq;
     using UnityEditor;
@@ -116,7 +115,6 @@ namespace UniPM
 
         #endregion
 
-        
         public static PackageConfig LoadFromPath(string configFilePath)
         {
             return AssetDatabase.LoadAssetAtPath<PackageConfig>(configFilePath.Replace(Application.dataPath, "Assets"));
@@ -125,7 +123,6 @@ namespace UniPM
         public void SaveLocal()
         {
             IOUtils.DeleteFileIfExists(ConfigFilePath);
-            AssetDatabase.Refresh();
 
             AssetDatabase.CreateAsset(this, ConfigFilePath);
             AssetDatabase.Refresh();
