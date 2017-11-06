@@ -22,10 +22,9 @@
  * THE SOFTWARE.
  ****************************************************************************/
 
-using UnityEngine;
-
 namespace UniPM
 {
+	using UnityEngine;
 	using QFramework;
     /// <summary>
     /// 本地页面

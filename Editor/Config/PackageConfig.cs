@@ -22,6 +22,8 @@
  * THE SOFTWARE.
  ****************************************************************************/
 
+using System.IO;
+
 namespace UniPM
 {
     using UnityEngine;
@@ -122,9 +124,10 @@ namespace UniPM
         
         public void SaveLocal()
         {
-            IOUtils.DeleteFileIfExists(ConfigFilePath);
-
-            AssetDatabase.CreateAsset(this, ConfigFilePath);
+            if (!File.Exists(ConfigFilePath))
+            {
+                AssetDatabase.CreateAsset(this, ConfigFilePath);
+            }
             AssetDatabase.Refresh();
             UpdateView();
         }
