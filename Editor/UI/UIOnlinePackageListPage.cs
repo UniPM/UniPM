@@ -24,14 +24,13 @@
 
 namespace UniPM
 {
-	using UnityEngine;
 	using QFramework;
     /// <summary>
     /// 本地页面
     /// </summary>
-    public class UIInstalledPackageListPage : EditorView
+    public class UIOnlinePackageListPage : EditorView
     {
-	    public UIInstalledPackageListPage(PackageListConfig localConfig)
+	    public UIOnlinePackageListPage(PackageListConfig remoteConfig)
 	    {
 		    ScrollView scrollView = new ScrollView();
 		    scrollView.Width = 800;
@@ -39,21 +38,6 @@ namespace UniPM
 
 		    VerticalView verticalView = new VerticalView();
 		    verticalView.AddChild(new SpaceView());
-			
-		    HorizontalView gitHorizontalView = new HorizontalView();
-
-		    LabelView labelView = new LabelView("Git Url:",50,30);
-		    labelView.FontColor = Color.white;
-		    gitHorizontalView.AddChild(labelView);
-			TextField gitUrl = new TextField(PackageListConfig.GitUrl);
-		    gitUrl.OnTextChanged += text =>
-		    {
-			    PackageListConfig.GitUrl = text;
-		    };
-		    
-		    gitHorizontalView.AddChild(gitUrl);
-
-		    verticalView.AddChild(gitHorizontalView);
 		    
 		    HorizontalView horizontalView = new HorizontalView();
 
@@ -65,7 +49,7 @@ namespace UniPM
 		    verticalView.AddChild(horizontalView);
 		    scrollView.AddChild(verticalView);
 
-		    foreach (var localConfigPluginInfo in localConfig.InstalledPackageList)
+		    foreach (var localConfigPluginInfo in remoteConfig.InstalledPackageList)
 		    {
 			    var scrollItem = new HorizontalView();
 			    
@@ -73,6 +57,7 @@ namespace UniPM
 			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(string.Format("v{0}", localConfigPluginInfo.Version)));
 			    scrollItem.AddChild(UIFactory.CreateInstalledLabel(localConfigPluginInfo.ReleaseNote));
 			    scrollItem.AddChild(new ButtonView("Download", 65, 25, () => UniPMWindow.DownloadZip(localConfigPluginInfo)));
+
 			    scrollView.AddChild(scrollItem);
 		    }
 

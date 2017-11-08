@@ -52,14 +52,29 @@ namespace UniPM
 		}
 
 		/// <summary>
-		/// 现在成功的PackageListPage
+		/// 本地安装的PackageListPage
 		/// </summary>
 		private UIInstalledPackageListPage mInstalledPackageListPage;
 
+		/// <summary>
+		/// 线上的PackageList详情页面
+		/// </summary>
+		/// 
+		private UIOnlinePackageListPage mOnlinePackageListPage;
 		void Init()
 		{
+			var verticalView = new VerticalView();
+			
 			mInstalledPackageListPage = new UIInstalledPackageListPage(LocalConfig);
-			AddChild(mInstalledPackageListPage);
+			verticalView.AddChild(mInstalledPackageListPage);
+			
+			LocalConfig.GetRemote(remotePackageListConfig =>
+			{
+				 mOnlinePackageListPage = new UIOnlinePackageListPage(remotePackageListConfig);
+				verticalView.AddChild(mOnlinePackageListPage);
+			});
+			
+			AddChild(verticalView);
 		}
 
 		[MenuItem("Assets/UniPM/MakePackage")]

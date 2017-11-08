@@ -71,7 +71,7 @@ namespace UniPM
 
         public void GetRemote(Action<PackageListConfig> onConfigReceived)
         {
-            ObservableWWW.Get("http://github.com/UniPM/PackageListServer/raw/master/PackageList.json")
+            ObservableWWW.Get(GitUrl.Append("/raw/master/PackageList.json").ToString())
                 .Subscribe(jsonCotnent =>
                 {
                     onConfigReceived(SerializeHelper.FromJson<PackageListConfig>(jsonCotnent));
