@@ -41,7 +41,7 @@ namespace QFramework
 //            Object.Destroy(selfObj);
 //        }
         
-        public static void Destroy<T>(this T selfObj,float afterDelay) where T : Object
+        public static void DestroyAfterDelay<T>(this T selfObj,float afterDelay) where T : Object
         {
             Object.Destroy(selfObj,afterDelay);
         }
