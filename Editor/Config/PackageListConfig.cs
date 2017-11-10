@@ -81,6 +81,28 @@ namespace UniPM
                 });
         }
 
+        /// <summary>
+        /// 剔除掉服务端同步的插件，再进行合并
+        /// </summary>
+        /// <returns></returns>
+        public PackageListConfig MergeGitClonedPackageList()
+        {
+            string clonedConfigFilePath = Application.dataPath.CombinePath(GitUrl.GetLastWord()).CombinePath("PackageList.json");
+
+            Log.I(clonedConfigFilePath);
+            
+            PackageListConfig clonedConfig = SerializeHelper.LoadJson<PackageListConfig>(clonedConfigFilePath);
+            
+            foreach (var installedPackageConfig in InstalledPackageList)
+            {
+                clonedConfig.InstalledPackageList.RemoveAll(config => config.Name.Equals(installedPackageConfig.Name));
+            }
+            
+            InstalledPackageList.AddRange(clonedConfig.InstalledPackageList);
+
+            return this;
+        }
+
 
         public void SaveLocal()
         {

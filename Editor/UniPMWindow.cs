@@ -112,15 +112,20 @@ namespace UniPM
 				{
 					RunCommand(string.Empty, "git clone ".Append(PackageListConfig.GitUrl).ToString());
 				}
-
+				
 				ZipUtil.ZipDirectory(config.PackagePath,
 					IOUtils.CreateDirIfNotExists(serverUploaderPath.CombinePath(config.Name)).CombinePath(config.Name + ".zip"));
 
-				PackageListConfig.GetInstalledPackageList().SaveExport();
+				PackageListConfig
+					.GetInstalledPackageList()
+					.MergeGitClonedPackageList()
+					.SaveExport();
 
 				RunCommand(PackageListConfig.GitUrl.GetLastWord(), string.Format(
 					"git add . && git commit -m \"{0}\" && git push",
-					config.ReleaseNote.IsNullOrEmpty() ? "no release note" : config.ReleaseNote));
+					config.ReleaseNote.IsNullOrEmpty()
+						? "no release note"
+						: config.Version.AppendFormat(" {0}", config.ReleaseNote).ToString()));
 
 				RunCommand(string.Empty, "rm -rf " + PackageListConfig.GitUrl.GetLastWord());
 
