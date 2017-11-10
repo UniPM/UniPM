@@ -134,49 +134,6 @@ namespace UniPM
 			}
 		}
 
-		[MenuItem("Assets/UniPM/Version/Update (x.0.0")]
-		static void UpdateMajorVersion()
-		{
-			string packagePath = MouseSelector.GetSelectedPathOrFallback();
-			string packageConfigPath = Path.Combine(packagePath, "Package.asset");
-			if (File.Exists(packageConfigPath))
-			{
-				PackageConfig config = PackageConfig.LoadFromPath(packageConfigPath);
-				config.UpdateVersion(0);
-				config.SaveLocal();
-			}
-		}
-
-		[MenuItem("Assets/UniPM/Version/Update (0.x.0")]
-		static void UpdateMiddleVersion()
-		{
-			string packagePath = MouseSelector.GetSelectedPathOrFallback();
-			string packageConfigPath = Path.Combine(packagePath, "Package.asset");
-			if (File.Exists(packageConfigPath))
-			{
-				PackageConfig config = PackageConfig.LoadFromPath(packageConfigPath);
-				config.UpdateVersion(1);
-				config.SaveLocal();
-			}
-		}
-
-		[MenuItem("Assets/UniPM/Version/Update (0.0.x")]
-		static void UpdateSubVersion()
-		{
-			string packagePath = MouseSelector.GetSelectedPathOrFallback();
-			string packageConfigPath = Path.Combine(packagePath, "Package.asset");
-			if (File.Exists(packageConfigPath))
-			{
-				PackageConfig config = PackageConfig.LoadFromPath(packageConfigPath);
-				config.UpdateVersion(2);
-				config.SaveLocal();
-			}
-			else
-			{
-				Log.W("no package.json file in folder:{0}", packagePath);
-			}
-		}
-
 		public static void RunCommand(string workingDirectory, string command)
 		{
 			ProcessStartInfo startInfo = new ProcessStartInfo("/bin/bash");
