@@ -35,9 +35,14 @@ namespace UniPM
     [System.Serializable]
     public class PackageConfig : ScriptableObject
     {
-        public string Name = "TestCompress";
+        /// <summary>
+        /// Git 插件服务器地址
+        /// </summary>
+        public string PackageServerGitUrl;
 
-        public string CopyRight = "UniPM";
+        public string Name;
+
+        public string CopyRight;
 
         public string Version;
 
@@ -48,6 +53,7 @@ namespace UniPM
             get { return PackagePath.Append(".asset").ToString(); }
         }
 
+        
         public string ReleaseNote;
 
         public string DownloadURL;
@@ -58,6 +64,9 @@ namespace UniPM
             PackagePath = packagePath;
             Version = "0.0.0";
             DownloadURL = PackageListConfig.GitUrl.AppendFormat("/raw/master/{0}/{0}.zip", Name).ToString();
+            
+            // 默认和 配置的一样。
+            PackageServerGitUrl = PackageListConfig.GitUrl; 
         }
 
         void UpdateView()

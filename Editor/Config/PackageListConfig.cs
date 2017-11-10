@@ -83,24 +83,22 @@ namespace UniPM
 
         /// <summary>
         /// 剔除掉服务端同步的插件，再进行合并
+        /// TODO: 只剔除一个就可以
         /// </summary>
         /// <returns></returns>
-        public PackageListConfig MergeGitClonedPackageList()
+        public static PackageListConfig MergeGitClonedPackageList(PackageConfig toUploadPackageConfig)
         {
-            string clonedConfigFilePath = Application.dataPath.CombinePath(GitUrl.GetLastWord()).CombinePath("PackageList.json");
+            string clonedConfigFilePath = Application.dataPath.CombinePath(toUploadPackageConfig.PackageServerGitUrl.GetLastWord()).CombinePath("PackageList.json");
 
             Log.I(clonedConfigFilePath);
             
             PackageListConfig clonedConfig = SerializeHelper.LoadJson<PackageListConfig>(clonedConfigFilePath);
             
-            foreach (var installedPackageConfig in InstalledPackageList)
-            {
-                clonedConfig.InstalledPackageList.RemoveAll(config => config.Name.Equals(installedPackageConfig.Name));
-            }
+            clonedConfig.InstalledPackageList.RemoveAll(config => config.Name.Equals(toUploadPackageConfig.Name));
             
-            InstalledPackageList.AddRange(clonedConfig.InstalledPackageList);
+            clonedConfig.InstalledPackageList.Add(toUploadPackageConfig);
 
-            return this;
+            return clonedConfig;
         }
 
 
@@ -109,9 +107,10 @@ namespace UniPM
             EditorPrefs.SetString(GIT_URL_KEY, GitUrl);
         }
 
-        public void SaveExport()
+        public PackageListConfig SaveExport(string gitServerUrl = null)
         {
-            this.SaveJson(Application.dataPath.CombinePath(GitUrl.GetLastWord()).CombinePath("PackageList.json"));
+            this.SaveJson(Application.dataPath.CombinePath(gitServerUrl.IsNullOrEmpty() ? GitUrl.GetLastWord() : gitServerUrl.GetLastWord()).CombinePath("PackageList.json"));
+            return this;
         }
     }
 }

@@ -106,32 +106,31 @@ namespace UniPM
 				string err = string.Empty;
 
 				PackageConfig config = PackageConfig.LoadFromPath(packageConfigPath);
-				string serverUploaderPath = Application.dataPath.CombinePath(PackageListConfig.GitUrl.GetLastWord());
+				string serverUploaderPath = Application.dataPath.CombinePath(config.PackageServerGitUrl.GetLastWord());
 
 				if (!Directory.Exists(serverUploaderPath))
 				{
-					RunCommand(string.Empty, "git clone ".Append(PackageListConfig.GitUrl).ToString());
+					RunCommand(string.Empty, "git clone ".Append(config.PackageServerGitUrl).ToString());
 				}
 				
 				ZipUtil.ZipDirectory(config.PackagePath,
 					IOUtils.CreateDirIfNotExists(serverUploaderPath.CombinePath(config.Name)).CombinePath(config.Name + ".zip"));
 
 				PackageListConfig
-					.GetInstalledPackageList()
-					.MergeGitClonedPackageList()
-					.SaveExport();
+					.MergeGitClonedPackageList(config)
+					.SaveExport(config.PackageServerGitUrl);
 
-				RunCommand(PackageListConfig.GitUrl.GetLastWord(), string.Format(
+				RunCommand(config.PackageServerGitUrl.GetLastWord(), string.Format(
 					"git add . && git commit -m \"{0}\" && git push",
 					config.ReleaseNote.IsNullOrEmpty()
 						? "no release note"
 						: config.Version.AppendFormat(" {0}", config.ReleaseNote).ToString()));
 
-				RunCommand(string.Empty, "rm -rf " + PackageListConfig.GitUrl.GetLastWord());
+				RunCommand(string.Empty, "rm -rf " + config.PackageServerGitUrl.GetLastWord());
 
 				AssetDatabase.Refresh();
 
-				Application.OpenURL(PackageListConfig.GitUrl);
+				Application.OpenURL(config.PackageServerGitUrl);
 			}
 			else
 			{

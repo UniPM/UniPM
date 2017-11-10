@@ -11,9 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a532353f1cce47a6bb02539546b8158, type: 3}
   m_Name: CSharp
   m_EditorClassIdentifier: 
+  PackageServerGitUrl: https://github.com/UniPM/PackageListServer
   Name: QFramework.Core.CSharp
   CopyRight: UniPM
   Version: 0.0.1
   PackagePath: Assets/QFramework/Core/CSharp
   ReleaseNote: 
-  DownloadURL: https://github.com/UniPM/PackageListServer/raw/master/CSharp/CSharp.zip
+  DownloadURL: https://github.com/UniPM/PackageListServer/raw/master/QFramework.Core.CSharp/QFramework.Core.CSharp.zip
