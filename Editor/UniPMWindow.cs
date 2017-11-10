@@ -124,7 +124,7 @@ namespace UniPM
 					"git add . && git commit -m \"{0}\" && git push",
 					config.ReleaseNote.IsNullOrEmpty()
 						? "no release note"
-						: config.Version.AppendFormat(" {0}", config.ReleaseNote).ToString()));
+						: config.Name.Append(" ").Append(config.Version).AppendFormat(" {0}", config.ReleaseNote).ToString()));
 
 				RunCommand(string.Empty, "rm -rf " + config.PackageServerGitUrl.GetLastWord());
 
